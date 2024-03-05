@@ -1,0 +1,301 @@
+body{
+
+}
+
+container{
+    width: 1024px;
+}
+
+h1{
+    text-align: center;
+}
+.content{
+position: relative;
+}
+.btn{
+    box-shadow: 3px 3px 9px  rgba(0, 0, 0, 0.5)!important;
+}
+
+
+                                        /* страница Клиенты*/
+
+/*поле для поиска*/
+.search_client{
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    width: 250px;
+}
+
+/*для скрытия блоков по кнопкам*/
+.hidden_1,.hidden_2,.hidden_3{
+  display: none;
+}
+.title_block_hidden{
+    text-align: center;
+    margin: 30px 0 10px 0;
+    font-weight: bold;
+    font-size: 20px;
+
+}
+
+/*Стили для фильтрации списка для выдачи на странице клиента*/
+
+#myInput {
+  /*background-image: url('/css/searchicon.png'); /* Добавить значок поиска для ввода */
+  background-position: 10px 12px; /* Расположите значок поиска */
+  background-repeat: no-repeat; /* Не повторяйте изображение значка */
+  width: 100%; /* Полная ширина */
+  font-size: 16px; /* Увеличить размер шрифта */
+  padding: 12px 20px 12px 40px; /* Добавить немного отступов */
+  border: 1px solid #ddd; /* Добавить серую границу */
+  margin-bottom: 12px; /* Добавить некоторое пространство под входом */
+}
+
+#myUL {
+  /* Удалить стиль списка по умолчанию */
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#myUL li a {
+  border: 1px solid #ddd; /* Добавить границу для всех ссылок */
+  margin-top: -1px; /* Предотвращение двойных границ */
+  background-color: #f6f6f6; /* Серый цвет фона */
+  padding: 12px; /* Добавить немного отступов */
+  text-decoration: none; /* Удалить подчеркивание текста по умолчанию */
+  font-size: 18px; /* Увеличьте размер шрифта */
+  color: black; /* Добавить черный цвет текста */
+  display: block; /* Сделайте его в элемент блока, чтобы заполнить весь список */
+}
+
+#myUL li a:hover:not(.header) {
+  background-color: #eee; /* Добавить эффект наведения на все ссылки, кроме заголовков */
+}
+.prokrutka_issue_tool{
+    width:100%; /* ширина нашего блока */
+height:200px; /* высота нашего блока */
+/*background: #fff; *//* цвет фона, белый */
+    border: none;
+/*border: 1px solid #C1C1C1;*/ /* размер и цвет границы блока */
+overflow: auto; /* свойство для прокрутки по горизонтали. Автоматом, если больше блока */
+}
+                                        /* страница Оборудование*/
+
+/*поле для поиска*/
+.form-control-tools{
+   position: relative;
+    /*right: 20px;*/
+    top: -2px!important;
+    /*width: 150px;*/
+    box-shadow: 3px 3px 9px  rgba(0, 0, 0, 0.5)!important;
+}
+.btn-serch{
+    border: 0;
+    background: none;
+
+}
+
+                                  /*кнопка добавления оборудования*/
+.add_tool_btn{
+    position: absolute;
+    right: 20px;
+    top: 73px;
+    width: 250px;
+}
+.rn_tool_btn{
+    position: absolute;
+    right: 20px;
+    top: 120px;
+    width: 250px;
+}
+.form-control-tools {
+    /* display:block; */
+    /* width:100%; */
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--bs-body-color);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: var(--bs-body-bg);
+    background-clip: padding-box;
+    border: var(--bs-border-width) solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out
+}
+                        /*блок таблицы с прокруткой и фиксированной шапкой*/
+.prokrutka {
+width:100%; /* ширина нашего блока */
+height:600px; /* высота нашего блока */
+/*background: #fff; *//* цвет фона, белый */
+    border: none;
+/*border: 1px solid #C1C1C1;*/ /* размер и цвет границы блока */
+overflow: auto; /* свойство для прокрутки по горизонтали. Автоматом, если больше блока */
+}
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+                                     /*стили попапов*/
+.popup{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    top: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    transition: all 0.2s ease 0s;
+    z-index: 99;
+}
+.popup.open{
+    opacity: 1;
+    visibility: visible;
+}
+.popup.open .popup__content{
+    opacity: 1;
+    transform: translate(0px, 0px);
+}
+.popup__body{
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 10px;
+}
+.popup__content{
+    background-color: #fff;
+    color: #000;
+    max-width: 690px;
+    border-radius: 10px;
+    padding: 10px 30px;
+    position: relative;
+    transition: all 0.2s ease 0s;
+    opacity: 0;
+    transform: translate(0px, -100%);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175)
+}
+.popup__close{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 15px;
+    text-decoration: none;
+    background-color: #a52834;
+    color: #fff;
+    padding: 0 7px;
+    border-radius: 5px;
+    opacity: 1;
+    border: 0;
+}
+.popup__close:hover{
+    opacity: 0.8;
+}
+.popup__title{
+    text-align: center;
+    font-size: 25px;
+    margin: 0 0 0.3em 0;
+}
+.popup__text{
+    text-align: center;
+}
+
+                                    /* подписи для блока управления записями*/
+.manage_tools_img {
+    display: inline-block; /* Строчно-блочный элемент */
+    position: relative; /* Относительное позиционирование */
+
+   }
+.manage_tools_img:hover{
+    font-weight: bold;
+
+    /*font-size: 14px;*/
+}
+.manage_tools_img:hover::after {
+    content: attr(data-title); /* Выводим текст */
+    position: absolute; /* Абсолютное позиционирование */
+    left: -50px;
+    /*right: -20px;*/
+    top: -40px; /* Положение подсказки */
+    z-index: 1; /* Отображаем подсказку поверх других элементов */
+    background: rgba(255,255,230,0.1); /* Полупрозрачный цвет фона */
+    color: #000;
+    font-family: Arial, sans-serif; /* Гарнитура шрифта */
+    font-size: 11px; /* Размер текста подсказки */
+    padding: 5px 10px; /* Поля */
+    /*border: 1px solid #333; /* Параметры рамки */
+    border-radius: 10px;
+      /* opacity: 0.7;*/
+    width: 100px;
+    text-align: center;
+
+   }
+.img_center{
+    vertical-align: middle!important;
+}
+
+/*текст в тиаблицах для перехода в карточку*/
+.text_card_hover{
+    text-decoration: underline;
+    text-decoration: none;
+    color: #000;
+}
+.text_card_hover:hover{
+    text-decoration: underline;
+
+}
+
+
+                                    /*карточка оборудовани*/
+.tool_info_block{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    /*border: 5px solid black;*/
+    margin: 20px;
+    /*font-size: 10px;*/
+}
+.tool_info_block_item_1{
+    width: 28%;
+    /*border-right: solid 1px #000;*/
+    margin: 2px;
+}.tool_info_block_item_2{
+    width: 38%;
+    margin: 2px;
+}.tool_info_block_item_3{
+    width: 33%;
+    /*border-left: solid 1px #000;*/
+    margin: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.tool_info_block_item_3 img{
+    width: 100%;
+}
+
+.tool_info_block2{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+.tool_info_block_item_4{
+   /* width: 60px;*/
+    margin-right: 5px;
+}
+.tool_info_block_item_5{
+    /*width: 60px;*/
+    margin-left: 0px!important;
+
+}
+.form-select{
+    padding: 0 10px 0 10px!important;
+}

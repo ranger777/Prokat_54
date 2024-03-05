@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{%block title%}
+Клиенты
+{%endblock%}
+{%block body%}
+<div class="content">
+    <h1>Клиенты</h1>
+    <br>
+    <a href="#popup"  class="btn me-2 mb-2 btn-primary add_tool_btn popup-link">Добавить клиента</a>
+    <form action="" class="search_clients me-2" role="search" method="post">
+        <a href="/all_clients"  class="btn me-2 mb-2 btn-secondary">Показать все</a>
+        <div style="display: inline-block">
+            <label class="form-check-label me-2"><b>Искать по:</b></label>
+            <input type="radio" name="radios" class="form-check-input" value="1" id="exampleRadio1">
+            <label class="form-check-label me-2" for="exampleRadio1">ID</label>
+            <input type="radio" name="radios" class="form-check-input" value="2" id="exampleRadio2" checked>
+            <label class="form-check-label me-2" for="exampleRadio2">Телефону</label>
+            <input type="radio" name="radios" class="form-check-input" value="3" id="exampleRadio3">
+            <label class="form-check-label me-2" for="exampleRadio3">Фамилии</label>
+            <input type="radio" name="radios" class="form-check-input" value="4" id="exampleRadio4">
+            <label class="form-check-label me-2" for="exampleRadio4">Гос.№</label>
+        </div>
+        <input type="search" name="search_text" class="form-control-tools" placeholder="Поиск клиента..." aria-label="Search">
+        <button class="btn-serch" type="submit">&#128269;</button>
+    </form>
+    <br>
+    <div class="bd-example-snippet bd-code-snippet prokrutka">
+        <div class="bd-example m-0 border-0">
+            <table class="table table-striped sortable" >
+                <thead style="text-align: center">
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">ФИО</th>
+                        <th scope="col">Телефон</th>
+                        <th scope="col">Гос.Номер</th>
+                        <th scope="col">Компания</th>
+                        <th scope="col">Примечание</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+            <tbody>
+{%for client in clients:%}
+                <tr>
+                    <td class="img_center" scope="row" style="text-align: center">{{'{:06}'.format(client[0])}}</td>
+                    <td><a href="/client/{{client[0]}}" class="text_card_hover" >{{client[1].capitalize()}} {{client[2].capitalize()}} {{client[3].capitalize()}}</a></td>
+                    <td style="text-align: center">{{client[4]}}</td>
+                    {% if client[5]==None or client[5]=='':%}
+                            <td>-</td>
+                    {% else %}<td>{{client[5]}}</td>
+                    {% endif %}
+                    <td style="text-align: center">{{client[7]}}</td>
+                    {% if client[8]==None or client[8]=='':%}
+                            <td>-</td>
+                    {% else %}<td>{{client[8].capitalize()}}</td>
+                    {% endif %}
+                    <td class="img_center" style="width: 70px"><a href="#popup{{client[0]}}3"  style="margin: 0 7px 0 0" class="popup-link manage_tools_img" data-title="Изменить"><img src="/_internal/icon/pensil.png" height="25"></a>
+                      <!--  <a href="#popup{{client[0]}}2"  style="margin: 0 0 0 0" class="popup-link manage_tools_img" data-title="Удалить"><img src="/_internal/icon/trash.png" height="25"></a>
+                    <a href="/all_clients" style="margin: 0 0 0 0"  class="manage_tools_img" data-title="Карточка клиента"><img src="/_internal/images/card_client.png" height="25"></a>--></td>
+                    </tr>
+                <!--модальное окно 2 удаление -->
+                    <div id="popup{{client[0]}}2" class="popup">
+                        <div class="popup__body ">
+                            <div class="popup__content">
+                                <button type="button" class="popup__close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                                <div class="popup__title">Удалить клиента</div>
+                                <div class="popup__text ">
+                                    <form action="clients_del/{{client[0]}}" class="" method="post">
+                                        <h3>{{'{:06}'.format(client[0])}}</h3>
+                                        <h3><b>{{client[1]}} {{client[2]}} {{client[3]}}<br>тел.: {{client[4]}}</b></h3>
+
+                                        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-danger" type="submit">Удалить</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                             <!--конец модальное окно 2 удалить -->
+                            <!--модальное окно 3 редактировать -->
+                    <div id="popup{{client[0]}}3" class="popup">
+                        <div class="popup__body ">
+                            <div class="popup__content">
+                                <button type="button" class="popup__close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                                <div class="popup__title">Редактировать инструмент<br>{{'{:06}'.format(client[0])}}</div>
+                                <div class="popup__text ">
+                                    <form action="clients_edit/{{client[0]}}" class="" enctype="multipart/form-data" method="post">
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="text" pattern="[a-zA-Zа-яА-ЯёЁ\- ]*" name="surname" class="form-control rounded-3" id="surname_edit" value="{{client[1]}}" placeholder="">
+                                            <label for="surname_edit">Фамилия</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="text"  pattern="[a-zA-Zа-яА-ЯёЁ\- ]*" name="name" class="form-control rounded-3" id="name_edit"  value="{{client[2]}}" placeholder="">
+                                            <label for="name_edit">Имя</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="text" name="middle_name"  pattern="[a-zA-Zа-яА-ЯёЁ\- ]*" class="form-control rounded-3" id="middle_name_edit"  value="{{client[3]}}" placeholder="">
+                                            <label for="middle_name_edit">Отчество</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="number" name="phone" class="form-control rounded-3" id="phone_edit"  value="{{client[4]}}" placeholder="">
+                                            <label for="phone_edit">№ телефона</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="text" name="gos_n"  pattern="[a-zA-Z0-9а-яА-ЯёЁ, ]*" class="form-control rounded-3" id="gos_n_edit"  value="{{client[5]}}" placeholder="">
+                                            <label for="gos_n_edit">Гос.номер</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="text" name="company"  pattern="[a-zA-Z0-9а-яА-ЯёЁ\-, _]*" class="form-control rounded-3" id="company_edit"  value="{{client[7].capitalize()}}" placeholder="">
+                                            <label for="company_edit">Компания</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" name="description"  pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ,!\.]*" class="form-control rounded-3" id="description_edit"  value="{% if client[8]==None or client[8]=='':%}{% else %}{{client[8].capitalize()}}{% endif %}" placeholder="">
+                                            <label for="description_edit">Примечание</label>
+                                        </div>
+                                        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-warning" type="submit">Изменить</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                             <!--конец модальное окно 3 редактировать -->
+{% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--модальное окно 1 добавление -->
+    <div id="popup" class="popup">
+        <div class="popup__body ">
+            <div class="popup__content">
+                <button type="button" class="popup__close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                <div class="popup__title">Добавить клиента</div>
+                <div class="popup__text ">
+                    <form action="clients_add" class="" method="post">
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="text" pattern="[a-zA-Zа-яА-ЯёЁ\- ]*" name="surname" required class="form-control rounded-3" id="surname" value="" placeholder="">
+                            <label for="surname">Фамилия</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="text" pattern="[a-zA-Zа-яА-ЯёЁ\- ]*" name="name" required class="form-control rounded-3" id="name"  value="" placeholder="">
+                            <label for="name">Имя</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="text" pattern="[a-zA-Zа-яА-ЯёЁ\- ]*" name="middle_name" required class="form-control rounded-3" id="middle_name"  value="" placeholder="">
+                            <label for="middle_name">Отчество</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="number" name="phone" class="form-control rounded-3" id="phone"  value="" placeholder="">
+                            <label for="phone">Номер телефона</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="text" pattern="[a-zA-Z0-9а-яА-ЯёЁ, ]*" name="gos_n" class="form-control rounded-3" id="gos_n"  value="" placeholder="">
+                            <label for="gos_n">Гос.номер</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="text" pattern="[a-zA-Z0-9а-яА-ЯёЁ\-, _]*" name="company" class="form-control rounded-3" id="company"  value="" placeholder="">
+                            <label for="company">Компания</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ,!\.]*" name="description" class="form-control rounded-3" id="description"  value="" placeholder="">
+                            <label for="description">Примечание</label>
+                        </div>
+                        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" >Добавить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+                              <!--конец модальное окно 1 добавление -->
+</div>
+<script src="/_internal/js/popup.js"></script> <!--всплывающие окна-->
+<script src="/_internal/js/sort_table.js"></script> <!--сортировка таблицы-->
+{%endblock%}

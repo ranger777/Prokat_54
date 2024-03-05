@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+
+{%block title%}
+Карточка оборудования
+{%endblock%}
+{%block body%}
+<div class="content">
+    <h1 class="fs-1 fw-bold ">{{tool[1].capitalize()}} {{tool[2].capitalize()}} {{tool[3].capitalize()}}</h1>
+    <!--<form class="search_client mb-3 d-flex" role="search">
+        <input type="search" class="form-control" placeholder="Поиск клиента..." aria-label="Search">
+        <button class="btn" type="submit">&#128269;</button>
+    </form>-->
+    <div class="d-flex  justify-content-center">
+        <button style="width: 300px" class="btn_1 btn me-5 btn-outline-primary align-items-center" type="button">Информация</button>
+        <button style="width: 300px" class="btn_2 btn me-5 btn-outline-primary align-items-center" type="button">История прокатов</button>
+        <button style="width: 300px" class="btn_3 btn me-5 btn-outline-primary align-items-center" type="button">Обслуживание</button>
+    </div>
+                                            <!--Информация об оборудовании-->
+    <div class="hidden_1">
+        <div class="tool_info_block">
+            <div class="tool_info_block_item_1">
+                <p class="fs-5 col-md-10">Инв.№: <b>{{'{:06}'.format(tool[0])}}</b></br>
+                    с/н: <b>{{tool[4]}}</b></br>
+                    Стоимость проката:</br><i>за сутки</i> <b>{{tool[11]}}</b></br><i>за 3 часа</i> <b>{{tool[12]}}</b></br><i>Залог</i>: <b>{{tool[13]}}</b>
+                </p>
+            </div>
+            <div class="tool_info_block_item_2">
+                <form action="/tool_info/{{tool[0]}}" method="post">
+                    <textarea pattern="2-[0-9]{3}-[0-9]{3}" name="tool_info" id="tool_info_block" style="resize: none; border: none; outline: none;background: none; overflow:hidden" class="fs-5 col-md-12"  wrap="hard" readonly>{% if tool[14]==None or tool[14]=='':%}{% else:%}{{tool[14]}}{% endif %}</textarea>
+                    <div class="d-flex  justify-content-start">
+                    <button class="btn-serch" id="tool_info_yes" type="submit" style="margin: 0 10px; display: none" >&#9989;</button><a href="/tool/{{tool[0]}}" id="tool_info_no" style="margin: 0 10px; text-decoration:none; display: none">&#10060;</a>
+                    <button class="btn-serch" id="tool_info_edit" style="margin: 0 10px;">&#128736;</button>
+                    </div>
+                </form>
+            </div>
+            <div class="tool_info_block_item_3"><img src="/_internal/images/{{tool[8]}}"></div>
+        </div>
+        <p class="fs-5 col-md-10">Дата приобретения: <b>{{purchase_date}}</b> стоимость: <b>{{tool[6]}}&nbspр.</b></p>
+            <form action="/tool_local/{{tool[0]}}" method="post">
+                <div class="tool_info_block2">
+                    <div class="tool_info_block_item_4">
+                    <!--<textarea pattern="2-[0-9]{3}-[0-9]{3}" name="tool_info" id="tool_info_block55" style="resize: none; border: none; outline: none; background: none; overflow:hidden" class="fs-5 col-md-12"  wrap="hard" readonly>{% if tool[14]==None or tool[14]=='':%}{% else:%}{{tool[14]}}{% endif %}</textarea>
+            -->         <p class="fs-5 col-md-10" style="margin: 0"> Сейчас</p>
+                    </div>
+                    <div class="tool_info_block_item_5">
+                        <select style="border: none; background: none; font-weight:bold" name="tool_local" id="tool_local_block" class="form-select fs-5" disabled>
+                            <option {% if tool[7]==0:%}selected {% endif %} value="0">свободно</option>
+                            <option {% if tool[7]==1:%}selected {% endif %} value="1">в прокате</option>
+                            <option {% if tool[7]==2:%}selected {% endif %} value="2">на ремонте</option>
+                            <option {% if tool[7]==3:%}selected {% endif %} value="3">списано</option>
+                        </select>
+                    </div>
+                    <div class="tool_info_block_item_6">
+                        <div class="d-flex  justify-content-start">
+                            <button class="btn-serch" id="tool_local_yes" type="submit" style="margin: 0 10px; display: none" >&#9989;</button><a href="/tool/{{tool[0]}}" id="tool_local_no" style="margin: 0 10px; text-decoration:none; display: none">&#10060;</a>
+                            <button class="btn-serch" id="tool_local_edit" style="margin: 0 10px;">&#128736;</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+<!--
+        <p class="fs-5 col-md-10">{% if tool[7]==0:%}Сейчас свободно{% elif tool[7]==1:%}Сейчас в прокате{% elif tool[7]==2:%}Сейчас на ремонте{% elif tool[7]==3:%}Списано
+                                {% endif %}</p>-->
+        <p class="fs-5 col-md-10">Без обслуживания: <b>{{tool[15]}}</b> прокатных дней</p>
+        <p class="fs-2 col-md-10">{% if tool[9]==None or tool[9]=='':%}
+                                {% else:%}Примечание: <i>{{tool[9].capitalize()}}</i>
+                                {% endif %}</p>
+    </div>
+                                                  <!--История прокатов-->
+    <div class="hidden_2">
+        <p class="title_block_hidden">История прокатов оборудования</p>
+        <div class="bd-example-snippet bd-code-snippet prokrutka">
+            <div class="bd-example m-0 border-0">
+                <table class="table table-striped sortable" >
+                    <thead style="text-align: center">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Клиент</th>
+                            <th scope="col">Взял</th>
+                            <th scope="col">План<br>вернуть</th>
+                            <th scope="col">Вернул</th>
+                            <th scope="col">Залог</th>
+                            <th scope="col">Сумма</th>
+                            <th scope="col">Примечание</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+{%for rental_h in rentals_h:%}
+                        <tr>
+                            <td class="img_center" scope="row" style="text-align: center">{{'{:06}'.format(rental_h[0])}}</td>
+                            <td><a href="/client/{{rental_h[1]}}"  class="text_card_hover" >{{rental_h[2].capitalize()}} {{rental_h[3].capitalize()}} {{rental_h[4].capitalize()}}</a></td>
+                            <td style="text-align: center">{{rental_h[5]}}</td>
+                            <td style="text-align: center">{{rental_h[6]}}</td>
+                            <td style="text-align: center">{{rental_h[7]}}</td>
+                            <td style="text-align: center">{{rental_h[8]}}</td>
+                            <td style="text-align: center">{{rental_h[9]}}</td>
+                            <td style="text-align: center">{{rental_h[10]}}</td>
+                        </tr>
+{% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+                                                         <!-- конец истории прокатов-->
+                                                        <!-- История обслуживания-->
+    <div class="hidden_3">
+        <a href="#popup"  class="btn me-2 mb-2 btn-primary rn_tool_btn popup-link">Провести обслуживание</a>
+        <p class="title_block_hidden">История обслуживания, ремонтов и замены расходников</p>
+        <div class="bd-example-snippet bd-code-snippet prokrutka">
+            <div class="bd-example m-0 border-0">
+                <table class="table table-striped sortable" >
+                    <thead style="text-align: center">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Вид<br>работ</th>
+                            <th scope="col">В ремонт</th>
+                            <th scope="col">С ремонта</th>
+                            <th scope="col">Сумма</th>
+                            <th scope="col">Примечание</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+{%for renovation_h in renovations_h:%}
+                        <tr>
+                            <td class="img_center" scope="row" style="text-align: center">{{'{:06}'.format(renovation_h[0])}}</td>
+                            <td style="text-align: center">{{renovation_h[1]}}</td>
+                            <td style="text-align: center">{{renovation_h[2]}}</td>
+                            <td style="text-align: center">{{renovation_h[3]}}</td>
+                            <td style="text-align: center">{{renovation_h[4]}}</td>
+                            <td style="text-align: center">{{renovation_h[5]}}</td>
+                        </tr>
+{% endfor %}
+                    </tbody>
+                 </table>
+            </div>
+        </div>
+        <!--модальное окно 1 добавление -->
+        <div id="popup" class="popup">
+            <div class="popup__body ">
+                <div class="popup__content">
+                    <button type="button" class="popup__close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                    <div class="popup__title">Провести обслуживание<br>{{tool[1].capitalize()}} {{tool[2].capitalize()}} {{tool[3].capitalize()}}<br>с/н: {{tool[4]}}</div>
+                    <div class="popup__text ">
+                        <form action="/tool_rn/{{tool[0]}}" class="" method="post">
+                            <div class="form-floating mb-3">
+                                <input type="text" pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ,!\.]*" name="work_type" class="form-control rounded-3" id="work_type" value="" placeholder="" required>
+                                <label for="work_type">Вид работ</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="datetime-local" name="date_for_repair" class="form-control rounded-3" id="date_for_repair"  value="" placeholder="" required>
+                                <label for="date_for_repair">Дата обслуживания</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="number" name="summ" class="form-control rounded-3" id="summ"  value="" placeholder="" required>
+                                <label for="summ">Сумма</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" name="description"  pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ,!\.]*" class="form-control rounded-3" id="description_renovations"  value="" placeholder="">
+                                <label for="description_renovations">Примечание</label>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" name="count" class="form-check-input" id="exampleCheck1" checked>
+                                <label class="form-check-label" for="exampleCheck1">Сбросить счетчик дней без обслуживания</label>
+                            </div>
+                            <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" >Обслужить</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+                              <!--конец модальное окно 1 добавление -->
+    </div>
+                                                        <!-- конец истории обслуживания-->
+</div>
+<script src="/_internal/js/hidden_elements.js" ></script>
+<script src="/_internal/js/popup.js"></script> <!--всплывающие окна-->
+<script src="/_internal/js/tool_info_edit.js"></script><!--Управление блоком информации-->
+<script src="/_internal/js/sort_table.js"></script> <!--сортировка таблиц-->
+<script>
+    const textarea = document.querySelector('textarea');
+    textarea.style.height = `${textarea.scrollHeight + 2}px`;
+    textarea.addEventListener('input', ()=> {
+        textarea.style.height = '';
+        textarea.style.height = `${textarea.scrollHeight + 2}px`;
+    })
+</script><!--растягивание текстового поля по содержимому-->
+{%endblock%}

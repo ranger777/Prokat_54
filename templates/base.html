@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/_internal/css/style.css">
+    <link href="/_internal/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <title>{%block title%}{%endblock%}</title>
+    <style>
+        .dropdown:hover > .dropdown-menu {display: block; top: 40px}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="d-flex flex-wrap justify-content-center py-3 mb-1 border-bottom">
+      <!--<a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">-->
+            <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto">
+                <img src="/_internal/icon/logo_54.png" style="width:50px; margin:0 10px;">
+                <span class="fs-4">Рабочее место сотрудника проката</span>
+            </div>
+      <!--</a>-->
+
+            <ul class="nav nav-pills ">
+                <li class="nav-item"><a href="/all_clients" class="btn btn-primary me-2">Клиенты</a></li>
+                <li class="nav-item"><a href="/rentals" class="btn btn-warning me-2">Прокаты</a></li>
+                <li>
+                    <div class="dropdown">
+                        <button type="button" class="btn me-2 mb-2 btn-success <!--dropdown-toggle-->" class="dropdown"  aria-expanded="false">Оборудование</button>
+                        <ul class="dropdown-menu" style="">
+                            <li><a class="dropdown-item" href="/tools">Список оборудования</a></li>
+                            <li><a class="dropdown-item" href="/renovations">История обслуживания</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <!--<li class="nav-item"><a href="/settings" class="btn btn-secondary me-2">Настройки</a></li>-->
+                <li class="nav-item"><a href="/" class="btn btn-outline-primary me-2">Start</a></li>
+            </ul>
+        </header>
+   {%block body%}{%endblock%}
+    </div>
+    <script src="/_internal/css/bootstrap/bootstrap.bundle.min.js" ></script>
+</body>
+</html>

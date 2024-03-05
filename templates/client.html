@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+
+{%block title%}
+Карточка клиента
+{%endblock%}
+{%block body%}
+<div class="content">
+    <h1 class="fs-1 fw-bold ">{{client[1].capitalize()}} {{client[2].capitalize()}} {{client[3].capitalize()}}</h1>
+    <p class="fs-2 col-md-10">ID клиента: <b>{{'{:06}'.format(client[0])}}</b>, тел.: <b>{{client[4]}}</b>, {{client[7]}}</p>
+    <p class="fs-2 col-md-10">{% if client[5]==None or client[5]=='':%}
+                                {% else:%}авто: <b>{{client[5]}}</b></br>
+                                {% endif %}
+                                {% if client[8]==None or client[8]=='':%}
+                                {% else:%}Примечание: <i>{{client[8].capitalize()}}</i></p>
+                                {% endif %}
+    <div class="d-flex  justify-content-center">
+        <button style="width: 300px" class="btn_2 btn me-5 btn-outline-primary align-items-center" type="button">История прокатов</button>
+        <button style="width: 300px" class="btn_1 btn me-5 btn-outline-primary align-items-center" type="button">Сейчас в прокате</button>
+        <button style="width: 300px" class="btn_3 btn me-5 btn-outline-primary align-items-center" type="button">Выдать</button>
+    </div>
+                                                  <!--История прокатов-->
+    <div class="hidden_2">
+        <p class="title_block_hidden">История прокатов клиента</p>
+        <div class="bd-example-snippet bd-code-snippet prokrutka">
+            <div class="bd-example m-0 border-0">
+                <table class="table table-striped sortable" >
+                    <thead style="text-align: center">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Оборудование</th>
+                            <th scope="col">Взял</th>
+                            <th scope="col">План<br>вернуть</th>
+                            <th scope="col">Вернул</th>
+                            <th scope="col">Залог</th>
+                            <th scope="col">Сумма</th>
+                            <th scope="col">Примечание</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+{%for rental_h in rentals_h:%}
+                        <tr>
+                            <td class="img_center" scope="row" style="text-align: center">{{'{:06}'.format(rental_h[0])}}</td>
+                            <td><a href="/tool/{{rental_h[1]}}"  class="text_card_hover" >{{rental_h[2].capitalize()}} {{rental_h[3].capitalize()}} {{rental_h[4].capitalize()}}</br>{{rental_h[5]}}</a></td>
+                            <td style="text-align: center">{{rental_h[6]}}</td>
+                            <td style="text-align: center">{{rental_h[7]}}</td>
+                            <td style="text-align: center">{{rental_h[8]}}</td>
+                            <td style="text-align: center">{{rental_h[9]}}</td>
+                            <td style="text-align: center">{{rental_h[10]}}</td>
+                            <td style="text-align: center">{{rental_h[11]}}</td>
+                        </tr>
+{% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+                                                         <!-- конец истории прокатов-->
+                                                        <!-- сейчас в прокате-->
+    <div class="hidden_1">
+        <p class="title_block_hidden">Сейчас в прокате у клиента</p>
+        <div class="bd-example-snippet bd-code-snippet prokrutka">
+            <div class="bd-example m-0 border-0">
+                <table class="table table-striped sortable" >
+                    <thead style="text-align: center">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Оборудование</th>
+                            <th scope="col">Взял</th>
+                            <th scope="col">План<br>вернуть</th>
+                            <th scope="col">Вернул</th>
+                            <th scope="col">Залог</th>
+                            <th scope="col">Сумма</th>
+                            <th scope="col">Примечание</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+{%for rental in rentals:%}
+                        <tr>
+                            <td class="img_center" scope="row" style="text-align: center">{{'{:06}'.format(rental[0])}}</td>
+                            <td><a href="/tool/{{rental[1]}}"  class="text_card_hover" >{{rental[2].capitalize()}} {{rental[3].capitalize()}} {{rental[4].capitalize()}}</br>{{rental[5]}}</a></td>
+                            <td style="text-align: center">{{rental[9]}}</td>
+                            <td style="text-align: center">{{rental[10]}}</td>
+                            <td style="text-align: center">{{rental[11]}}</td>
+                            <td style="text-align: center">{{rental[12]}}</td>
+                            <td style="text-align: center">{{rental[13]}}</td>
+                            <td style="text-align: center">{{rental[14]}}</td>
+                            {% if rental[11]==None  or rental[11]=='' or rental[11]=='-':%}
+                            <td class="img_center" style="width: 70px"><a href="#popup{{rental[0]}}1"  style="margin: 0 7px 0 0" class="popup-link manage_tools_img" data-title="Принять"><img src="/_internal/icon/accept.png" height="25"></a></td>
+                            {% else %}
+                            <td class="img_center" style="width: 70px"><a href="#popup{{rental[0]}}2"  style="margin: 0 7px 0 0" class="popup-link manage_tools_img" data-title="Расчитать"><img src="/_internal/icon/calc.png" height="25"></a></td>
+                            {% endif %}
+                        </tr>
+
+                            <!--модальное окно 1 принять -->
+                        <div id="popup{{rental[0]}}1" class="popup">
+                            <div class="popup__body ">
+                                <div class="popup__content">
+                                    <button type="button" class="popup__close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                                    <div class="popup__title">Принять с проката:<br><b>{{rental[2].capitalize()}} {{rental[3].capitalize()}} {{rental[4].capitalize()}}</br>{{rental[5]}}</b></div>
+                                    <div class="popup__text ">
+                                        <form action="/client_rent_accept/{{rental[0]}}" class="" method="post">
+                                            <div class="form-floating mb-3" style="display: inline-block; top: 0px; width: 207px!important;">
+                                                <input type="hidden" name="client_id" value="{{client[0]}}">
+                                                <input type="hidden" name="tool_id" value="{{rental[1]}}">
+                                                <input type="datetime-local" name="date_take" class="form-control rounded-3" id="date_take_1" value="{{rental[9]}}"  placeholder="" disabled>
+                                                <label for="date_take_1">Взял</label>
+                                            </div>
+                                            <div class="form-floating mb-3" style="display: inline-block; top: 0px; width: 207px!important;">
+                                                <input type="datetime-local" name="date_return" class="form-control rounded-3" id="date_return_1" value=""  placeholder="" required >
+                                                <label for="date_return_1">Дата возврата</label>
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input type="text" name="description"  pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ,!\.]*" class="form-control rounded-3" id="description_1"  value="{% if rental[14]==None or rental[14]=='':%}{% else %}{{rental[14].capitalize()}}{% endif %}" placeholder="">
+                                                <label for="description_1">Примечание</label>
+                                            </div>
+                                            <button class="w-100 mb-2 btn btn-lg rounded-3 btn-secondary" type="submit">Принять</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                             <!--конец модальное окно 1 принять -->
+                            <!--модальное окно 2 рассчитать -->
+                        <div id="popup{{rental[0]}}2" class="popup">
+                            <div class="popup__body ">
+                                <div class="popup__content">
+                                    <button type="button" class="popup__close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                                    <div class="popup__title">
+                                        Расчитать клиента за:<br>
+                                        <b>{{rental[2].capitalize()}} {{rental[3].capitalize()}} {{rental[4].capitalize()}}</b></br>
+                                        с/н: {{rental[5]}}<br>
+                                        Время пользования: дней - <b>{{rental[15]}}</b>, часов - <b>{{rental[16]}}</b></br>
+                                        Стоимость прока: <b>{{rental[17]}}</b> руб.</br>
+                                        С учетом залога: <b>{{rental[18]}}</b>
+                                    </div>
+                                    <div class="popup__text ">
+                                        <form action="/client_rent_calc/{{rental[0]}}" class="" method="post">
+                                            <input type="hidden" name="day" value="{{rental[15]}}">
+                                            <input type="hidden" name="tool_id" value="{{rental[1]}}">
+                                            <div class="form-floating mb-3" style="display: inline-block">
+                                                <input type="hidden" name="client_id" value="{{client[0]}}">
+                                                <input type="number" name="summ" class="form-control rounded-3" id="summ"  value="{{rental[17]}}" placeholder="">
+                                                <label for="summ">Стоимость проката</label>
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input type="text" name="description"  pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ,!\.]*" class="form-control rounded-3" id="description_2"  value="{% if rental[14]==None or rental[14]=='':%}{% else %}{{rental[14].capitalize()}}{% endif %}" placeholder="">
+                                                <label for="description_2">Примечание</label>
+                                            </div>
+                                            <button class="w-100 mb-2 btn btn-lg rounded-3 btn-success" type="submit">Закрыть сделку</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                             <!--конец модальное окно 2 расчитать -->
+
+{% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+                                                        <!-- конец сейчас в прокате-->
+    <div class="hidden_3">
+        <p class="title_block_hidden">Выдать</p>
+        <div class="mb-3">
+            <label for="myUL" class="form-label">Выбрать оборудование для проката</label>
+            <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Поиск ...">
+            <div class="bd-example-snippet bd-code-snippet prokrutka_issue_tool">
+                <div class="bd-example m-0 border-0">
+                    <ul id="myUL">
+{%for issue_tool in issue_tools:%}
+                        <li>
+                            <a href="#popup{{issue_tool[0]}}3"  style="margin: 0 7px 0 0" class="popup-link">
+                                <b>{{issue_tool[1].capitalize()}} {{issue_tool[2].capitalize()}} {{issue_tool[3].capitalize()}}</b>, с/н: {{issue_tool[4]}}
+                                {% if issue_tool[5]==None or issue_tool[5]=='':%}
+                                {% else %}<br>Примечание: <i>{{issue_tool[5].capitalize()}}</i>
+                                {% endif %}
+                                <p style="display: none">{{issue_tool[6]}}</p>
+                            </a>
+                        </li>
+                        <!--модальное окно 3 выдать -->
+                        <div id="popup{{issue_tool[0]}}3" class="popup">
+                            <div class="popup__body ">
+                                <div class="popup__content">
+                                    <button type="button" class="popup__close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                                    <div class="popup__title">
+                                        Выдать оборудование:<br>
+                                        <b>{{issue_tool[1].capitalize()}} {{issue_tool[2].capitalize()}} {{issue_tool[3].capitalize()}}</b></br>
+                                        с/н: {{issue_tool[4]}}<br>
+                                        Прокат на день: <b>{{issue_tool[7]}}</b> руб.<br>
+                                        Проката на 3 часа: <b>{{issue_tool[8]}}</b> руб.<br>
+                                        Рекомендуемый залог: <b>{{issue_tool[9]}}</b> руб.<br>
+
+                                    </div>
+                                    <div class="popup__text ">
+                                        <form action="/client_issue_tool" class="" method="post">
+                                            <div class="form-floating mb-3" style="display: inline-block">
+                                                <input type="datetime-local" name="date_take" class="form-control rounded-3" id="date_take_3"  value="" placeholder="" required>
+                                                <label for="date_take_3">Дата выдачи</label>
+                                                <input type="hidden" name="client_id" value="{{client[0]}}">
+                                                <input type="hidden" name="tool_id" value="{{issue_tool[0]}}">
+                                            </div>
+                                            <div class="form-floating mb-3" style="display: inline-block">
+                                                <input type="datetime-local" name="date_plane_return" class="form-control rounded-3" id="date_plane_return_3"  value="" placeholder="" required>
+                                                <label for="date_plane_return_3">Планируемая дата возврата</label>
+                                            </div>
+                                            <div class="form-floating mb-3" style="display: inline-block">
+                                                <input type="number" name="collateral" class="form-control rounded-3" id="collateral_3"  value="{{issue_tool[9]}}" placeholder="">
+                                                <label for="collateral_3">Залог</label>
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input type="text" name="description"  pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ,!\.]*" class="form-control rounded-3" id="description_3"  value="" placeholder="">
+                                                <label for="description_3">Примечание</label>
+                                            </div>
+                                            <button class="w-100 mb-2 btn btn-lg rounded-3 btn-warning" type="submit">Выдать</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                             <!--конец модальное окно 3 выдать -->
+
+{% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+<script src="/_internal/js/hidden_elements.js" ></script>
+<script src="/_internal/js/popup.js"></script> <!--всплывающие окна-->
+<script src="/_internal/js/filtered_list.js"></script> <!--фильтрация списка выдачи-->
+{%endblock%}

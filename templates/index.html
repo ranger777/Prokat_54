@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{%block title%}
+Прокат 54
+{%endblock%}
+{%block body%}
+<div class="content">
+    <h1>Прокат 54</h1>
+    <br>
+    <!--оставим для всплывающего окна с отчетами
+    <a href="#popup"  class="btn me-2 mb-2 btn-primary add_tool_btn popup-link">Добавить клиента</a>-->
+    <div>
+        {% if connect_bd == true :%}<p>Подключена база данных <b>{{name_db}}</b></p>{% else %}<p style="font-size: 30px; color: #a40101; font-weight: bold">Отсутствует файл базы данных либо база данных испорчена</p>{% endif %}
+        Резевные копии базы:
+        {%for file_bu in files_bu:%}<br><b>{{file_bu}}</b>{% endfor %}<br><br>
+        <p>Всего клиентов: <b>{% if total_client[0] != None or total_client[0] != '':%}{{total_client[0]}}{% else %}0{% endif %}</b></p>
+        <p>Всего оборудования: <b>{% if total_tool[0] != None or total_tool[0] != '':%}{{total_tool[0]}}{% else %}0{% endif %}</b></p>
+        <p>Из них:
+           <!-- {% if total_tool[0] == None or total_tool[0] == '' or total_tool[0] == 0:%}<br>Свободно - <b>0</b><br>В прокате - <b>0</b><br>На ремонте - <b>0</b><br>Списано - <b>0</b>{% else %}-->
+                {%set res = []%} <!--Создадим пермеменную для массива-->
+                    {%for t_tg in total_tg:%}<!--в массив сложим все значения локаций-->
+                        {{  res.append(t_tg[0])|default("", True) }}<!--такая конструкция делает расчет и скрывает значение None-->
+                    {% endfor %}
+                <br>Свободно -
+                    {% if 0 in res:%}<!--если в массив входит локация 0, то ищем количество этой локации с помощью цикла-->
+                        {%for t_tg in total_tg:%}
+                            {% if t_tg[0] == 0 :%}
+                                <b>{{t_tg[1]}}</b>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}<b>0</b>{% endif %}
+                <br>В прокате -
+                    {% if 1 in res:%}
+                        {%for t_tg in total_tg:%}
+                            {% if t_tg[0] == 1 :%}
+                                <b>{{t_tg[1]}}</b>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}<b>0</b>{% endif %}
+                <br>На ремонте -
+                    {% if 2 in res:%}
+                        {%for t_tg in total_tg:%}
+                            {% if t_tg[0] == 2 :%}
+                                <b>{{t_tg[1]}}</b>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}<b>0</b>{% endif %}
+                <br>Списано -
+                    {% if 3 in res:%}
+                        {%for t_tg in total_tg:%}
+                            {% if t_tg[0] == 3 :%}
+                                <b>{{t_tg[1]}}</b>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}<b>0</b>{% endif %}
+
+
+           <!-- {% endif %}-->
+        </p>
+    </div>
+    <!--модальное окно 1 добавление
+    <div id="popup" class="popup">
+        <div class="popup__body ">
+            <div class="popup__content">
+                <button type="button" class="popup__close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                <div class="popup__title">Добавить клиента</div>
+                <div class="popup__text ">
+                    <form action="clients_add" class="" method="post">
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="text" pattern="[a-zA-Zа-яА-ЯёЁ\- ]*" name="surname" required class="form-control rounded-3" id="surname" value="" placeholder="">
+                            <label for="surname">Фамилия</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="text" pattern="[a-zA-Zа-яА-ЯёЁ\- ]*" name="name" required class="form-control rounded-3" id="name"  value="" placeholder="">
+                            <label for="name">Имя</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="text" pattern="[a-zA-Zа-яА-ЯёЁ\- ]*" name="middle_name" required class="form-control rounded-3" id="middle_name"  value="" placeholder="">
+                            <label for="middle_name">Отчество</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="number" name="phone" class="form-control rounded-3" id="phone"  value="" placeholder="">
+                            <label for="phone">Номер телефона</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="text" pattern="[a-zA-Z0-9а-яА-ЯёЁ, ]*" name="gos_n" class="form-control rounded-3" id="gos_n"  value="" placeholder="">
+                            <label for="gos_n">Гос.номер</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="text" pattern="[a-zA-Z0-9а-яА-ЯёЁ\-, _]*" name="company" class="form-control rounded-3" id="company"  value="" placeholder="">
+                            <label for="company">Компания</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ,!\.]*" name="description" class="form-control rounded-3" id="description"  value="" placeholder="">
+                            <label for="description">Примечание</label>
+                        </div>
+                        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" >Добавить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+                              конец модальное окно 1 добавление -->
+</div>
+<script src="/_internal/js/popup.js"></script> <!--всплывающие окна-->
+{%endblock%}

@@ -1,0 +1,242 @@
+{% extends 'base.html' %}
+
+{%block title%}
+Оборудование
+{%endblock%}
+{%block body%}
+<div class="content">
+    <h1>Оборудование</h1>
+    <br>
+    <a href="#popup"  class="btn me-2 mb-2 btn-success add_tool_btn popup-link">Добавить оборудование</a>
+    <form action="" class="search_tools me-2" role="search" method="post">
+        <a href="/tools"  class="btn me-2 mb-2 btn-secondary">Показать все</a>
+        <input type="text" name="search_text" class="form-control-tools" value="{{search_text}}" placeholder="Поиск оборудования..." aria-label="Search">
+        <button class="btn-serch" type="submit">&#128269;</button>
+    </form>
+    <br>
+    <div class="bd-example-snippet bd-code-snippet prokrutka">
+        <div class="bd-example m-0 border-0">
+            <table id="data-table" class="table table-striped sortable">
+                <thead style="text-align: center">
+                    <tr>
+                        <th scope="col">Инв.№</th>
+                        <th scope="col">Оборудование</th>
+                        <th scope="col">Дата<br>покуки</th>
+                        <th scope="col">Цена<br>покупки</th>
+                        <th scope="col">Где</th>
+                        <th scope="col">Примечание</th>
+                        <th scope="col">Аренда<br>(сутки / час)</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+            {%for tool in tools:%}
+                    <tr>
+                        <td class="img_center"  style="text-align: center">{{'{:06}'.format(tool[0])}}</td>
+                        <td><a href="/tool/{{tool[0]}}"  class="text_card_hover">{{tool[1].capitalize()}} {{tool[2].capitalize()}} {{tool[3].capitalize()}}<br>с/н: {{tool[4]}}</a></td>
+                        <td style="text-align: center">{{tool[5]}}</td>
+                        <td style="text-align: center">{{tool[6]}}</td>
+                            {% if tool[7]==2:%}
+                        <td style="text-align: center">На ремонте</td>
+                            {% elif tool[7]==1:%}
+                        <td style="text-align: center">Выдано</td>
+                            {% elif tool[7]==0:%}
+                        <td style="text-align: center">Свободно</td>
+                            {% elif tool[7]==3:%}
+                        <td style="text-align: center">Списано</td>
+                            {% else %}<td style="text-align: center">Не определено</td>
+                            {% endif %}
+                    {% if tool[9]==None or tool[9]=='':%}
+                        <td>-</td>
+                    {% else %}<td>{{tool[9].capitalize()}}</td>
+                    {% endif %}
+                    {% if tool[7]==3:%}
+                        <td style="text-align: center">-</td>
+                    {% else %}<td style="text-align: center"><b>{{tool[11]}} / {{tool[12]}}</b><br>Залог: <b>{{tool[13]}}</b></td>
+                    {% endif %}
+                        <td class="img_center" style="width: 90px"><a href="#popup{{tool[0]}}3"  style="margin: 0 7px 0 0" class="popup-link manage_tools_img" data-title="Изменить"><img src="/_internal/icon/pensil.png" height="25"></a>
+                            <!--<a href="#popup{{tool[0]}}2"  style="margin: 0 7px 0 0" class="popup-link manage_tools_img" data-title="Удалить"><img src="/_internal/icon/trash.png" height="25"></a>-->
+                            <a href="#popup{{tool[0]}}4"  style="margin: 0 7px 0 0" class="popup-link manage_tools_img" data-title="В ремонт"><img src="/_internal/icon/repair.png" height="25"></a>
+                        </td>
+                    </tr>
+          <!--модальное окно 2 удаление -->
+                    <div id="popup{{tool[0]}}2" class="popup">
+                        <div class="popup__body ">
+                            <div class="popup__content">
+                                <button type="button" class="popup__close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                                <div class="popup__title">Удалить инструмент</div>
+                                <div class="popup__text ">
+                                    <form action="tools_del/{{tool[0]}}" class="" enctype="multipart/form-data" method="post">
+                                        <h3>{{'{:06}'.format(tool[0])}}</h3>
+                                        <h3><b>{{tool[1]}} {{tool[2]}} {{tool[3]}}<br>с/н: {{tool[4]}}</b></h3>
+                                        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-danger" type="submit">Удалить</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                             <!--конец модальное окно 2 удалить -->
+                              <!--модальное окно 3 редактировать -->
+                    <div id="popup{{tool[0]}}3" class="popup">
+                        <div class="popup__body ">
+                            <div class="popup__content">
+                                <button type="button" class="popup__close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                                <div class="popup__title">Редактировать инструмент<br>{{'{:06}'.format(tool[0])}}</div>
+                                <div class="popup__text ">
+                                    <form action="tools_edit/{{tool[0]}}" class="" enctype="multipart/form-data" method="post">
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="text" pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ]*" name="type" class="form-control rounded-3" id="type_edit" value="{{tool[1]}}" placeholder="">
+                                            <label for="type_edit">Тип оборудования</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="text"  pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ]*" name="brand" class="form-control rounded-3" id="brand_edit"  value="{{tool[2]}}" placeholder="">
+                                            <label for="brand_edit">Брэнд</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="text" name="model"  pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_\./ ]*" class="form-control rounded-3" id="model_edit"  value="{{tool[3]}}" placeholder="">
+                                            <label for="model_edit">Модель</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="text" name="serial_number"  pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_\./]*" class="form-control rounded-3" id="serial_number_edit"  value="{{tool[4]}}" placeholder="">
+                                            <label for="serial_number_edit">Серийный номер</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="number" name="purchase_value" class="form-control rounded-3" id="purchase_value_edit"  value="{{tool[6]}}" placeholder="">
+                                            <label for="purchase_value_edit">Стоимость приобретения</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block; top: 0px; width: 207px!important;">
+                                            <input type="date" name="purchase_date" class="form-control rounded-3" id="purchase_date_edit" value="{{tool[5]}}"  placeholder="">
+                                            <label for="purchase_date_edit">Дата приобретения</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" name="description"  pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ,!\.]*" class="form-control rounded-3" id="description_edit"  value="{% if tool[9]==None or tool[9]=='':%}{% else %}{{tool[9].capitalize()}}{% endif %}" placeholder="">
+                                            <label for="description_edit">Примечание</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" name="keywords"  pattern="[a-zA-Z0-9а-яА-ЯёЁ\-, _]*" class="form-control rounded-3" id="keywords_edit"  value="{% if tool[10]==None or tool[10]=='':%}{% else %}{{tool[10].capitalize()}}{% endif %}" placeholder="">
+                                            <label for="keywords_edit">Ключевые слова через ","</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="number" name="rent_day_value" class="form-control rounded-3" id="rent_day_value_edit"  value="{{tool[11]}}" placeholder="">
+                                            <label for="rent_day_value_edit">День проката</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="number" name="rent_hour_value" class="form-control rounded-3" id="rent_hour_value_edit"  value="{{tool[12]}}" placeholder="">
+                                            <label for="rent_hour_value_edit">3 часа проката</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="number" name="collateral_value" class="form-control rounded-3" id="collateral_value_edit"  value="{{tool[13]}}" placeholder="">
+                                            <label for="collateral_value_edit">Цена залога</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="file" class="form-control rounded-3" id="photo_edit" name="photo" multiple accept="image/*,image/jpeg,image/png">
+                                            <label for="photo_edit">Изображение</label>
+                                            <input type="hidden" name="photo_name" value="{{tool[8]}}">
+                                        </div>
+                                        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-warning" type="submit">Изменить</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                             <!--конец модальное окно 3 редактирование -->
+                                <!--модальное окно 4 в ремонт -->
+                    <div id="popup{{tool[0]}}4" class="popup">
+                        <div class="popup__body ">
+                            <div class="popup__content">
+                                <button type="button" class="popup__close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                                <div class="popup__title">Отправить в ремонт<br>{{tool[1].capitalize()}} {{tool[2].capitalize()}} {{tool[3].capitalize()}}<br>с/н: {{tool[4]}}</div>
+                                <div class="popup__text ">
+                                    <form action="tool_renovation/{{tool[0]}}" class="" enctype="multipart/form-data" method="post">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ,!\.]*" name="work_type" class="form-control rounded-3" id="work_type" value="" placeholder="" required>
+                                            <label for="work_type">Вид работ</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="datetime-local" name="date_for_repair" class="form-control rounded-3" id="date_for_repair"  value="" placeholder="" required>
+                                            <label for="date_for_repair">В ремонт</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" name="description"  pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ,!\.]*" class="form-control rounded-3" id="description_renovations"  value="" placeholder="">
+                                            <label for="description_renovations">Примечание</label>
+                                        </div>
+                                        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-warning" type="submit">Отправить на ремонт</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                             <!--конец модальное окно 4 в ремонт -->
+{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+                                 <!--модальное окно 1 добавление -->
+    <div id="popup" class="popup">
+        <div class="popup__body ">
+            <div class="popup__content">
+                <button type="button" class="popup__close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                <div class="popup__title">Добавить инструмент</div>
+                <div class="popup__text ">
+                    <form action="tools_add" class="" enctype="multipart/form-data" method="post">
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="text" pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ]*" name="type" class="form-control rounded-3" id="type" value="" placeholder="">
+                            <label for="type">Тип оборудования</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="text" pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ]*" name="brand" class="form-control rounded-3" id="brand"  value="" placeholder="">
+                            <label for="brand">Брэнд</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="text" pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_\./ ]*" name="model" class="form-control rounded-3" id="model"  value="" placeholder="">
+                            <label for="model">Модель</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="text" pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_\./]*" name="serial_number" class="form-control rounded-3" id="serial_number"  value="" placeholder="">
+                            <label for="serial_number">Серийный номер</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="number" name="purchase_value" class="form-control rounded-3" id="purchase_value"  value="" placeholder="">
+                            <label for="purchase_value">Стоимость приобретения</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block; top: 7px; width: 207px!important;">
+                            <input type="date" name="purchase_date" class="form-control rounded-3" id="purchase_date"   placeholder="">
+                            <label for="purchase_date">Дата приобретения</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ,!\.]*" name="description" class="form-control rounded-3" id="description"  value="" placeholder="">
+                            <label for="description">Примечание</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" pattern="[a-zA-Z0-9а-яА-ЯёЁ\-, _]*" name="keywords" class="form-control rounded-3" id="keywords"  value="" placeholder="">
+                            <label for="keywords">Ключевые слова через ","</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="number" name="rent_day_value" class="form-control rounded-3" id="rent_day_value"  value="" placeholder="">
+                            <label for="rent_day_value">День проката</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="number" name="rent_hour_value" class="form-control rounded-3" id="rent_hour_value"  value="" placeholder="">
+                            <label for="rent_hour_value">3 часа проката</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="number" name="collateral_value" class="form-control rounded-3" id="collateral_value"  value="" placeholder="">
+                            <label for="collateral_value">Цена залога</label>
+                        </div>
+                        <div class="form-floating mb-3" style="display: inline-block">
+                            <input type="file" class="form-control rounded-3" id="photo" name="photo" multiple accept="image/*,image/jpeg,image/png">
+                            <label for="photo">Изображение</label>
+                        </div>
+                        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-success" type="submit"  onclick="return validateImage();">Добавить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+                              <!--конец модальное окно 1 добавление -->
+</div>
+<script src="/_internal/js/popup.js"></script> <!--всплывающие окна-->
+<script src="/_internal/js/check_ext.js"></script> <!--проверка разрешений файла перед загрузкой-->
+<script src="/_internal/js/sort_table.js"></script> <!--сортировка таблицы-->
+{%endblock%}

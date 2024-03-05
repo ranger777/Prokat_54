@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{%block title%}
+История всего обслуживания
+{%endblock%}
+{%block body%}
+<div class="content">
+    <h1>История обслуживания и ремонтов</h1>
+    <br>
+    <!--<a href="#popup"  class="btn me-2 mb-2 btn-primary add_tool_btn popup-link">тут будут ОТЧЕТЫ</a>--><!--Убрал для оператора-->
+    <form action="" class="search_tools me-2" role="search" method="post">
+        <a href="/renovations"  class="btn me-2 mb-2 btn-secondary">Показать все</a>
+        <input type="text" name="search_text" class="form-control-tools" value="{{search_text}}" placeholder="Поиск..." aria-label="Search">
+        <button class="btn-serch" type="submit">&#128269;</button>
+    </form>
+    <br>
+    <div class="bd-example-snippet bd-code-snippet prokrutka">
+        <div class="bd-example m-0 border-0">
+            <table class="table table-striped sortable" >
+                <thead style="text-align: center">
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Оборудование</th>
+                        <th scope="col">Вид<br>работ</th>
+                        <th scope="col">В ремонт</th>
+                        <th scope="col">С ремонта</th>
+                        <th scope="col">Сумма</th>
+                        <th scope="col">Примечание</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+{%for renovation in renovations:%}
+                    <tr>
+                        <td class="img_center" scope="row" style="text-align: center">{{'{:06}'.format(renovation[0])}}</td>
+                        <td><a href="/tool/{{renovation[1]}}"  class="text_card_hover" >{{renovation[2].capitalize()}} {{renovation[3].capitalize()}} {{renovation[4].capitalize()}}</br>{{renovation[5]}}</a></td>
+                        <td style="text-align: center">{{renovation[6].capitalize()}}</td>
+                        <td style="text-align: center">{{renovation[7]}}</td>
+                        <td style="text-align: center">{{renovation[8]}}</td>
+                        <td style="text-align: center">{{renovation[9]}}</td>
+                        <td style="text-align: center">{{renovation[10].capitalize()}}</td>
+                        <td class="img_center" style="width: 70px">
+                            <a href="#popup{{renovation[0]}}3"  style="margin: 0 7px 0 0" class="popup-link manage_tools_img" data-title="Изменить"><img src="/_internal/icon/pensil.png" height="25"></a>
+                            <!--<a href="#popup{{renovation[0]}}2"  style="margin: 0 7px 0 0" class="popup-link manage_tools_img" data-title="Удалить"><img src="/_internal/icon/trash.png" height="25"></a>-->
+                        </td>
+                    </tr>
+                <!--модальное окно 2 удаление -->
+                    <div id="popup{{renovation[0]}}2" class="popup">
+                        <div class="popup__body ">
+                            <div class="popup__content">
+                                <button type="button" class="popup__close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                                <div class="popup__title">Удалить позицию {{'{:06}'.format(renovation[0])}}</div>
+                                <div class="popup__text ">
+                                    <form action="renovation_del/{{renovation[0]}}" class="" method="post">
+                                        <h3>оборудование: <b>{{renovation[2].capitalize()}} {{renovation[3].capitalize()}} {{renovation[4].capitalize()}}, <br>с/н: {{renovation[5]}}</b><br>{{renovation[6].capitalize()}}</h3>
+                                    <button class="w-100 mb-2 btn btn-lg rounded-3 btn-danger" type="submit">Удалить</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                             <!--конец модальное окно 2 удалить -->
+                            <!--модальное окно 3 редактировать -->
+                    <div id="popup{{renovation[0]}}3" class="popup">
+                        <div class="popup__body ">
+                            <div class="popup__content">
+                                <button type="button" class="popup__close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                                <div class="popup__title">Редактировать позицию {{'{:06}'.format(renovation[0])}}<br>
+                                    {{renovation[2].capitalize()}} {{renovation[3].capitalize()}} {{renovation[4].capitalize()}}</br>{{renovation[5]}}
+                                </div>
+                                <div class="popup__text ">
+                                    <form action="renovation_edit/{{renovation[0]}}" class="" method="post">
+                                        <input type="hidden" name="tool_id" value="{{renovation[1]}}">
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="text" name="work_type" class="form-control rounded-3" id="work_type"  value="{{renovation[6].capitalize()}}" placeholder="" required>
+                                            <label for="work_type">Вид работ</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="number" name="summ" class="form-control rounded-3" id="summ"  value="{{renovation[9]}}" placeholder="" required>
+                                            <label for="summ">Сумма</label>
+                                        </div>
+                                        <br>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="datetime-local" name="date_for_repair" class="form-control rounded-3" id="date_for_repair"  value="{{renovation[7]}}" placeholder="" required>
+                                            <label for="date_for_repair">В ремонт</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="datetime-local" name="date_from_repair" class="form-control rounded-3" id="date_from_repair"  value="{{renovation[8]}}" placeholder="">
+                                            <label for="date_from_repair">С ремонта</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" name="description"  pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ,!\.]*" class="form-control rounded-3" id="description"  value="{{renovation[10].capitalize()}}" placeholder="">
+                                            <label for="description">Примечание</label>
+                                        </div>
+                                        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-warning" type="submit">Изменить</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                             <!--конец модальное окно 3 редактировать -->
+{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="/_internal/js/popup.js"></script> <!--всплывающие окна-->
+<script src="/_internal/js/sort_table.js"></script> <!--сортировка таблицы-->
+<script src="/_internal/js/filtered_list.js"></script> <!--фильтрация списка выдачи-->
+{%endblock%}

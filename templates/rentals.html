@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+
+{%block title%}
+История всех прокатов
+{%endblock%}
+{%block body%}
+<div class="content">
+    <h1>Прокат</h1>
+    <br>
+    <!--<a href="#popup"  class="btn me-2 mb-2 btn-primary add_tool_btn popup-link">тут будут ОТЧЕТЫ</a>--><!--Убрал для оператора-->
+    <form action="" class="search_tools me-2" role="search" method="post">
+        <a href="/rentals"  class="btn me-2 mb-2 btn-secondary">Показать все</a>
+        <input type="text" name="search_text" class="form-control-tools" value="{{search_text}}" placeholder="Поиск проката..." aria-label="Search">
+        <button class="btn-serch" type="submit">&#128269;</button>
+    </form>
+    <br>
+    <div class="bd-example-snippet bd-code-snippet prokrutka">
+        <div class="bd-example m-0 border-0">
+            <table class="table table-striped sortable" >
+                <thead style="text-align: center">
+                    <tr>
+                        <th scope="col">ID</th>
+                            <th scope="col">Клиент</th>
+                            <th scope="col">Оборудование</th>
+                            <th scope="col">Взял</th>
+                            <th scope="col">План<br>вернуть</th>
+                            <th scope="col">Вернул</th>
+                            <th scope="col">Залог</th>
+                            <th scope="col">Сумма</th>
+                            <th scope="col">Примечание</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+                <tbody>
+{%for rental in rentals:%}
+                    <tr>
+                        <td class="img_center" scope="row" style="text-align: center">{{'{:06}'.format(rental[0])}}</td>
+                        <td><a href="/client/{{rental[1]}}" class="text_card_hover">{{rental[2].capitalize()}} {{rental[3].capitalize()}} {{rental[4].capitalize()}}</a></td>
+                        <td><a href="/tool/{{rental[5]}}"  class="text_card_hover" >{{rental[6].capitalize()}} {{rental[7].capitalize()}} {{rental[8].capitalize()}}</br>{{rental[9]}}</a></td>
+                        <td style="text-align: center">{{rental[10]}}</td>
+                        <td style="text-align: center">{{rental[11]}}</td>
+                        <td style="text-align: center">{{rental[12]}}</td>
+                        <td style="text-align: center">{{rental[13]}}</td>
+                        <td style="text-align: center">{{rental[14]}}</td>
+                        <td style="text-align: center">{{rental[15]}}</td>
+                        <td class="img_center" style="width: 70px">
+                            <a href="#popup{{rental[0]}}3"  style="margin: 0 7px 0 0" class="popup-link manage_tools_img" data-title="Изменить"><img src="/_internal/icon/pensil.png" height="25"></a>
+                            <!--<a href="#popup{{rental[0]}}2"  style="margin: 0 7px 0 0" class="popup-link manage_tools_img" data-title="Удалить"><img src="/_internal/icon/trash.png" height="25"></a>-->
+                        </td>
+                    </tr>
+                <!--модальное окно 2 удаление -->
+                    <div id="popup{{rental[0]}}2" class="popup">
+                        <div class="popup__body ">
+                            <div class="popup__content">
+                                <button type="button" class="popup__close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                                <div class="popup__title">Удалить прокат</div>
+                                <div class="popup__text ">
+                                    <form action="rental_del/{{rental[0]}}" class="" method="post">
+                                        <h3>{{'{:06}'.format(rental[0])}}</h3>
+                                        <h3>Клиент: <b>{{rental[2].capitalize()}} {{rental[3].capitalize()}} {{rental[4].capitalize()}}</b><br>оборудование: <b>{{rental[6].capitalize()}} {{rental[7].capitalize()}} {{rental[8].capitalize()}}, <br>с/н: {{rental[9]}}</b></h3>
+                                        <input type="hidden" name="tool_id" value="{{rental[5]}}">
+                                        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-danger" type="submit">Удалить</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                             <!--конец модальное окно 2 удалить -->
+                            <!--модальное окно 3 редактировать -->
+                    <div id="popup{{rental[0]}}3" class="popup">
+                        <div class="popup__body ">
+                            <div class="popup__content">
+                                <button type="button" class="popup__close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                                <div class="popup__title">Редактировать прокат<br>{{'{:06}'.format(rental[0])}}</div>
+                                <div class="popup__text ">
+                                    <form action="rental_edit/{{rental[0]}}" class="" method="post">
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="number" name="client_id" class="form-control rounded-3" id="client_id"  value="{{'{:06}'.format(rental[1])}}" placeholder="" required>
+                                            <label for="client_id">ID клиента</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="number" name="tool_id" class="form-control rounded-3" id="tool_id"  value="{{'{:06}'.format(rental[5])}}" placeholder="" required>
+                                            <label for="tool_id">Инв.№ оборудования</label>
+                                        </div>
+                                        <br>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="datetime-local" name="date_take" class="form-control rounded-3" id="date_take"  value="{{rental[10]}}" placeholder="" required>
+                                            <label for="date_take">Дата выдачи</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="datetime-local" name="date_plane_return" class="form-control rounded-3" id="date_plane_return"  value="{{rental[11]}}" placeholder="" required>
+                                            <label for="date_plane_return">Планируемая дата возврата</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="datetime-local" name="date_return" class="form-control rounded-3" id="date_return"  value="{{rental[12]}}" placeholder="">
+                                            <label for="date_return">Дата возврата</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="number" name="collateral" class="form-control rounded-3" id="collateral"  value="{{rental[13]}}" placeholder="">
+                                            <label for="collateral">Залог</label>
+                                        </div>
+                                        <div class="form-floating mb-3" style="display: inline-block">
+                                            <input type="number" name="summ" class="form-control rounded-3" id="summ"  value="{{rental[14]}}" placeholder="">
+                                            <label for="summ">Сумма</label>
+                                        </div>
+                                        <div class="form-floating mb-3">
+                                            <input type="text" name="description"  pattern="[a-zA-Z0-9а-яА-ЯёЁ\-_ ,!\.]*" class="form-control rounded-3" id="description"  value="{{rental[15].capitalize()}}" placeholder="">
+                                            <label for="description">Примечание</label>
+                                        </div>
+                                        <button class="w-100 mb-2 btn btn-lg rounded-3 btn-warning" type="submit">Изменить</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                             <!--конец модальное окно 3 редактировать -->
+{% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="/_internal/js/popup.js"></script> <!--всплывающие окна-->
+<script src="/_internal/js/sort_table.js"></script> <!--сортировка таблицы-->
+<script src="/_internal/js/filtered_list.js"></script> <!--фильтрация списка выдачи-->
+{%endblock%}
